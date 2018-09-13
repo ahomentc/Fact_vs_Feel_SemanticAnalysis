@@ -1,0 +1,25 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<h3 id="fact" style="margin-left: 47%; margin-top: 20px;">Fact: 0%</h3>
+<h3 id="feel" style="margin-left: 47%; margin-top: 20px;">Feel: 0%</h3>
+
+<textarea style="font-size:12; padding:5px; max-width:100%; width:70%; margin-left: 15%; height:500px; outline:none; margin-top: 27px; border-color:lightgrey" id="contentEditor" placeholder = "Enter text here" name="contentEditor"></textarea><br/>
+
+<button style="margin-left: 47%; margin-top: 20px; width:80px; height:40px;" onclick="evalContent()">Evaluate</button>
+
+<script>
+	function evalContent()
+	{
+		var text = document.getElementById("contentEditor").value;
+		$.post("{% url 'home:make_prediction' %}", {text_data:text, csrfmiddlewaretoken: '{{ csrf_token }}'}, function(response)
+        {
+            if(response.includes("error")) {
+                window.alert(response);
+            } else{
+            	var response = JSON.parse(response);
+            	document.getElementById("fact").innerHTML = "Fact: " + response[0] + "%";
+            	document.getElementById("feel").innerHTML = "Feel: " + response[1] + "%";
+            }
+        });
+	}
+</script>

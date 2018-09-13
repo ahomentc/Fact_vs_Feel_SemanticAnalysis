@@ -7,6 +7,7 @@ import random
 import os
 from sklearn.metrics import accuracy_score
 import pickle
+import sys
 
 class FactOrFeelModel(object):
 	log_model = LogisticRegression()
@@ -15,11 +16,20 @@ class FactOrFeelModel(object):
 	def __init__(self):
 		# load the model from disk
 		filename = 'finalized_model.sav'
-		self.log_model = pickle.load(open(filename, 'rb'))
+		if (sys.version_info > (3, 0)): # if python3
+			with open(filename,'rb') as f:
+				self.log_model = pickle.load(f, encoding='latin1')
+		else:
+			self.log_model = pickle.load(open(filename, 'rb'))
+
 
 		#load the vectorizer from the disk
 		filename2 = 'vectorizer.sav'
-		self.vectorizer = pickle.load(open(filename2, 'rb'))
+		if (sys.version_info > (3, 0)):	# if python 3
+			with open(filename2,'rb') as f:
+				self.vectorizer = pickle.load(f, encoding='latin1')
+		else:
+			self.vectorizer = pickle.load(open(filename2, 'rb'))
 
 	def example(self):
 		text1 = "You should be proud of yourself"
@@ -49,11 +59,13 @@ class FactOrFeelModel(object):
 		model = FactOrFeelModel()
 		splitText = text.split('.')
 		splitText.pop()
-		splitText = [x+y for x,y in zip(splitText[0::2], splitText[1::2])] #each prediciton is two sentences
+		# splitText = [x+y for x,y in zip(splitText[0::2], splitText[1::2])] #each prediciton is two sentences
 
 		preds = model.make_prediction(splitText)
 
 		for pred in preds:
+			if type(pred) != str:
+				pred = pred.decode("utf-8")
 			if pred == 'fact':
 				factCounter+=1
 			else:
@@ -70,7 +82,7 @@ class FactOrFeelModel(object):
 
 if __name__ == "__main__":
 	model = FactOrFeelModel()
-	path = '/Users/andrei/fact_vs_feel/texts/SteveJobsIphone.txt'
+	path = '/Users/andrei/fact_vs_feel/texts/CNNTrumpArticle.txt'
 	with open(path, 'r') as content_file:
 		content = content_file.read()
 		percentages = model.evaluateText(content)

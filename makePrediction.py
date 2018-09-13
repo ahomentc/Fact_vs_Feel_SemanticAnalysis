@@ -59,7 +59,7 @@ class FactOrFeelModel(object):
 		model = FactOrFeelModel()
 		splitText = text.split('.')
 		splitText.pop()
-		# splitText = [x+y for x,y in zip(splitText[0::2], splitText[1::2])] #each prediciton is two sentences
+		splitText = [x+y for x,y in zip(splitText[0::2], splitText[1::2])] #each prediciton is two sentences
 
 		preds = model.make_prediction(splitText)
 

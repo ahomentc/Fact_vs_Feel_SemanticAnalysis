@@ -62,7 +62,10 @@ class FactOrFeelModel(object):
 		percentFacts = int(float(factCounter)/float(factCounter+feelCounter) * 100)
 		percentFeels = int(float(feelCounter)/float(feelCounter+factCounter) * 100)
 
-		print("facts: " + str(percentFacts) + "% | feels: " + str(percentFeels) + "% | Predictions accuracy: 73%")
+		return [percentFacts,percentFeels]
+
+	def printEvaluations(self, percentages):
+		print("facts: " + str(percentages[0]) + "% | feels: " + str(percentages[1]) + "% | Predictions accuracy: 73%")
 
 
 if __name__ == "__main__":
@@ -70,8 +73,9 @@ if __name__ == "__main__":
 	path = '/Users/andrei/fact_vs_feel/texts/SteveJobsIphone.txt'
 	with open(path, 'r') as content_file:
 		content = content_file.read()
-		model.evaluateText(content)
-		
+		percentages = model.evaluateText(content)
+		model.printEvaluations(percentages)
+
 	# while(True):
 	# 	data = raw_input("Enter a sentance. (type 'q' to quit)\n")
 	# 	if data == "q":
